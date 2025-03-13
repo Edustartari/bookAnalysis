@@ -1,0 +1,9 @@
+package-lock.json
+node_modules/
+dist/
+webpack-stats.json
+db.sqlite3
+env/
+*.pyc
+*/__pycache__
+static/*

@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Book Analysis</title>
+		<!-- Webpack rendered CSS -->
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				font-family: sans-serif;
+			}
+		</style>
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+		{% block links %}{% endblock %}
+	</head>
+	<body>
+		<div id="react-app"></div>
+		<!-- Webpack rendered JS -->
+		{% block javascript %}{% endblock %}
+		<script src="{% static 'index_bundle.js' %}"></script>
+	</body>
+</html>
