@@ -3,10 +3,10 @@ set -o errexit
 echo "BUILD START"
 
 # create a virtual environment named 'venv' if it doesn't already exist
-python3.9 -m virtualenv env
+python3.9 -m venv venv
 
 # activate the virtual environment
-source env/bin/activate
+source venv/bin/activate
 
 # install all deps in the venv
 pip install -r requirements.txt
