@@ -7,6 +7,6 @@ export default  class AppMobile extends React.Component {
 		this.state = {};
 	}
 	render() {
-		return <div>Edu testing 4!</div>;
+		return <div>Edu testing 5!</div>;
 	}
 }
