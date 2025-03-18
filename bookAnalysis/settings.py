@@ -139,3 +139,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+GROQ_API_KEY = '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'
+
+os.environ['GROQ_API_KEY'] = GROQ_API_KEY

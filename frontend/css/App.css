@@ -112,3 +112,26 @@ body {
 .app-latest-no-searches {
     margin: 10px 0 0 0;
 }
+.app-analysis {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #dbdbdb;
+    padding: 15px;
+    border-radius: 5px;
+}
+.app-analysis-buttons {
+
+}
+.app-analysis-text {
+    margin: 20px 0 7px 0;
+    font-size: 18px;
+}
+.app-analysis-buttons .css-1blvszr-MuiButtonBase-root-MuiButton-root {
+    margin: 0 12px 12px 0;
+    font-size: 0.750rem;
+}
+.app-analysis-buttons .css-1blvszr-MuiButtonBase-root-MuiButton-root:nth-last-child(1) {
+    margin-right: 0px;
+}

@@ -22,6 +22,8 @@ export default function AppMobile() {
 	const [currentBook, setCurrentBook] = React.useState({});
 	const [search, setSearch] = React.useState('');
 	const [loadingFetch, setLoadingFetch] = React.useState(false);
+	const [loadingAnalysis, setLoadingAnalysis] = React.useState(false);
+	const [analysisText, setAnalysisText] = React.useState('Pick an analysis...');
 	const [latestSearches, setLatestSearches] = React.useState({});
 
 	const changeTab = (event, newValue) => {
@@ -34,6 +36,9 @@ export default function AppMobile() {
 
 	async function search_book(value) {
 		if(value === '') return;
+
+		setTab(0);
+		setAnalysisText('Pick an analysis...');
 		setLoadingFetch(true);
 
 		setSearch('');
@@ -41,6 +46,7 @@ export default function AppMobile() {
 		// Check if value is a number
 		let book_id = parseInt(value);
 		if (isNaN(book_id)) {
+			setLoadingFetch(false);
 			return;
 		}
 
@@ -69,6 +75,34 @@ export default function AppMobile() {
 		let currentLatest = latestSearches;
 		currentLatest[book_id] = json.data;
 		setLatestSearches(currentLatest);
+	}
+
+	async function analysis(action) {
+		setLoadingAnalysis(true);
+
+		if(action in currentBook['analysis']) {
+			setAnalysisText(currentBook['analysis'][action]);
+			setLoadingAnalysis(false);
+			return;
+		}
+		
+		// Fetch book data
+		const response = await fetch(`/analysis/?book_id=${currentBook['book_id']}&action=${action}`);
+		let text = await response.text();
+		let json = JSON.parse(text);
+		setAnalysisText(json.data);
+
+		// Update current book with the new analysis
+		let book = Object.assign({}, currentBook);
+		book['analysis'][action] = json.data;
+		setCurrentBook(book);
+		
+		setLoadingAnalysis(false);
+		
+		// Save new_analysis to local storage
+		let book_searches = check_local_storage();
+		book_searches[currentBook['book_id']]['analysis'][action] = json.data;
+		localStorage.setItem('book_searches', JSON.stringify(book_searches));
 	}
 
 	return (
@@ -112,7 +146,20 @@ export default function AppMobile() {
 								</div>
 							}
 							{tab === 1 &&
-								<div>Item Two</div>
+								<div className='app-analysis'>
+									<div className='app-analysis-buttons'>
+										<Button variant="outlined" onClick={() => analysis('characters')}>Key Characters</Button>
+										<Button variant="outlined" onClick={() => analysis('language')}>Language Detection</Button>
+										<Button variant="outlined" onClick={() => analysis('sentiment')}>Sentiment Analysis</Button>
+										<Button variant="outlined" onClick={() => analysis('summary')}>Plot Summary</Button>
+									</div>
+									{loadingAnalysis &&
+										<div className='app-loading' style={{marginBottom: 25}}><CircularProgress /></div>
+									}
+									{!loadingAnalysis &&
+										<div className='app-analysis-text'>{analysisText}</div>
+									}
+								</div>
 							}
 						</>
 					}

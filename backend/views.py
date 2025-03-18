@@ -3,17 +3,15 @@ from django.http import HttpResponse, JsonResponse
 import requests
 import json
 from bs4 import BeautifulSoup
+from django.conf import settings
+import os
+from groq import Groq
 
 def index(request):
 	context = {}
 	return render(request, 'index.html', context)
 
 def search(request, book_id):
-
-	# Get book content
-	# content_url = f"https://www.gutenberg.org/files/{book_id}/{book_id}-0.txt"
-	# response = requests.get(content_url)
-	# book_content = response.text
 
 	# Get metadata
 	metadata_url = f"https://www.gutenberg.org/ebooks/{book_id}"
@@ -23,7 +21,8 @@ def search(request, book_id):
 	soup = BeautifulSoup(metadata, 'html.parser')
 
 	book_dict = {
-		"book_id": str(book_id)
+		"book_id": str(book_id),
+		"analysis": {}
 	}
 
 	# Get link to read online
@@ -69,4 +68,64 @@ def search(request, book_id):
 		'status_code': 200,
 		'data': book_dict
 	}
-	return JsonResponse(response_dict, safe=False) 
+	return JsonResponse(response_dict, safe=False)
+
+
+def analysis(request):
+
+	book_id = request.GET.get('book_id')
+	action = request.GET.get('action')
+
+	# Get book content
+	content_url = f"https://www.gutenberg.org/files/{book_id}/{book_id}-0.txt"
+	response = requests.get(content_url)
+	book_content = response.text
+
+	client = Groq(
+		api_key=os.environ.get("GROQ_API_KEY"),
+	)
+
+	try:
+		book_sample = book_content[:6000]
+	except:
+		book_sample = book_content
+
+	# Set the correct instruction for the AI
+	if action == 'characters':
+		user_content = f"Give me only a list of the key characters based on the following book sample: {book_sample}"
+	elif action == 'language':
+		user_content = f"Please give me only in one word what language is used in this book sample: {book_sample}"
+	elif action == 'sentiment':
+		user_content = f'''
+			Please do an analysis and return in one word the sentiment evaluation from a text. The answer can only be positive, negative, or neutral.
+			Give me only in one word the sentiment analysis of the following book sample: {book_sample}
+		'''
+	else:
+		user_content = f"Please give me the plot summary from this text: {book_sample}"
+
+	chat_completion = client.chat.completions.create(
+		messages=[
+			{
+				"role": "system",
+				"content": "you are a helpful assistant."
+			},
+			{
+				"role": "user",
+				"content": user_content,
+			}
+		],
+		model="llama-3.3-70b-versatile",
+		temperature=1,
+		max_completion_tokens=1024,
+		top_p=1,
+		stop=None,
+	)
+
+	analysis_text = chat_completion.choices[0].message.content
+
+	response_dict = {
+		'status_message': 'success',
+		'status_code': 200,
+		'data': analysis_text
+	}
+	return JsonResponse(response_dict, safe=False)
