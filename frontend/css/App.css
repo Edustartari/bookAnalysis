@@ -1,3 +1,114 @@
 body {
-    background-color: red;
+    margin: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.app-main-background{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+.app-search-container{
+    display: flex;
+    max-width: 800px;
+}
+.app-search-textfield {
+    margin: 0 12px 0 0 !important;
+    width: 500px;
+}
+.app-search-button {
+    width: 160px;
+}
+.app-main-container{
+    margin: 30px 0 0 0;
+    max-width: 950px;
+    width: 70%;
+}
+.app-tabs-container{
+    margin: 0 0 30px 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.app-tabs-container .css-1usuzwp-MuiButtonBase-root-MuiTab-root {
+    /* width: 100%; */
+}
+.app-main-info{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    border: 1px solid #dbdbdb;
+    padding: 15px;
+    border-radius: 5px;
+}
+.app-main-info-details{
+    width: 550px;
+}
+.app-main-info-details-title{
+    font-size: 24px;
+    font-weight: bold;
+}
+.app-main-info-details-author{
+    font-size: 20px;
+    margin: 2px 0 12px 0;
+}
+.app-main-info-details-description{
+
+}
+.app-main-info-details-description-text{
+    margin: 0 0 12px 0;
+}
+.app-main-info-buttons{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 30%;
+    margin: auto auto;
+}
+.app-main-info-buttons *:nth-child(1) {
+    margin: 0 0 12px 0;
+}
+.app-latest-container{
+    margin: 30px 0 0 0;
+    max-width: 950px;
+    width: 70%;
+}
+.app-latest-title{
+    font-size: 25px;
+}
+.app-latest-table{
+    margin: 10px 0 0 0;
+}
+.app-latest-table-row{
+    display: flex;
+    align-items: center;
+    margin: 0 0 10px 0;
+}
+.app-latest-table-column-id {
+    width: 120px;
+}
+.app-latest-table-column-id span {
+    cursor: pointer;
+    text-decoration: underline;
+    color: blue;
+}
+.app-latest-table-column{
+
+}
+.app-latest-table-column-header{
+
+}
+.app-loading {
+    margin: 30px 0 0 0;
+    max-width: 950px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.app-latest-no-searches {
+    margin: 10px 0 0 0;
 }
