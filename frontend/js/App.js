@@ -78,21 +78,20 @@ export default function AppMobile() {
 			}
 			result = json_data.data
 			setCurrentBook(result);
+
+			// Save search to local storage
+			book_searches[book_id] = result;
+			localStorage.setItem('book_searches', JSON.stringify(book_searches));
+			
+			// And update latest searches
+			let currentLatest = latestSearches;
+			currentLatest[book_id] = result;
+			setLatestSearches(currentLatest);
 		} catch (error) {
 			alert('Error fetching book data. Please try again later.');
 		} finally {
 			setLoadingFetch(false);
 		}
-
-
-		// Save search to local storage
-		book_searches[book_id] = result;
-		localStorage.setItem('book_searches', JSON.stringify(book_searches));
-		
-		// And update latest searches
-		let currentLatest = latestSearches;
-		currentLatest[book_id] = result;
-		setLatestSearches(currentLatest);
 	}
 
 	async function analysis(action) {
