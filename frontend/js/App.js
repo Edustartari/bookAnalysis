@@ -46,6 +46,7 @@ export default function AppMobile() {
 		// Check if value is a number
 		let book_id = parseInt(value);
 		if (isNaN(book_id)) {
+			alert('Please enter a valid book ID (number).');
 			setLoadingFetch(false);
 			return;
 		}
@@ -60,20 +61,37 @@ export default function AppMobile() {
 		}
 		
 		// Fetch book data
-		const response = await fetch(`/search/${book_id}`);
-		let text = await response.text();
-		let json = JSON.parse(text);
-		setCurrentBook(json.data);
+		let result = false
+		try {
+			const response = await fetch(`/search/${book_id}`);
+			let text = await response.text();
+			let json_data = JSON.parse(text);
+			if (response.status !== 200) {
+				alert(json_data?.message || 'Error fetching book data. Please try again later.');
+				setLoadingFetch(false);
+				return;
+			}
+			if( json_data.status_message === 'error') {
+				alert(json_data.message || 'Error fetching book data. Please try again later.');
+				setLoadingFetch(false);
+				return;
+			}
+			result = json_data.data
+			setCurrentBook(result);
+		} catch (error) {
+			alert('Error fetching book data. Please try again later.');
+		} finally {
+			setLoadingFetch(false);
+		}
 
-		setLoadingFetch(false);
 
 		// Save search to local storage
-		book_searches[book_id] = json.data;
+		book_searches[book_id] = result;
 		localStorage.setItem('book_searches', JSON.stringify(book_searches));
 		
 		// And update latest searches
 		let currentLatest = latestSearches;
-		currentLatest[book_id] = json.data;
+		currentLatest[book_id] = result;
 		setLatestSearches(currentLatest);
 	}
 
@@ -109,7 +127,7 @@ export default function AppMobile() {
 		<div className='app-main-background'>
 			<div className='app-search-container'>
 				<TextField value={search} onChange={(e) => setSearch(e.target.value)} className='app-search-textfield' id="outlined-basic" label="BOOK ID" variant="outlined" />
-				<Button onClick={() => search_book(search)} className='app-search-button' variant="contained">SEARCH</Button>
+				<Button onClick={() => search_book(search)} disabled={loadingFetch || loadingAnalysis} className='app-search-button' variant="contained">SEARCH</Button>
 			</div>
 			{JSON.stringify(currentBook) === '{}' && loadingFetch && 
 				<div className='app-main-loading' style={{margin: 20}}>Loading...</div>
@@ -117,9 +135,9 @@ export default function AppMobile() {
 			{JSON.stringify(currentBook) !== '{}' &&
 				<div className='app-main-container'>
 					<div className='app-tabs-container'>
-						<Tabs value={tab} onChange={changeTab} aria-label="basic tabs example">
-							<Tab label="INFO" index={0} />
-							<Tab label="ANALYSIS" index={1} />
+						<Tabs value={tab} onChange={changeTab} aria-label="basic tabs example" className='app-tabs'>
+							<Tab label="INFO" index={0} disabled={loadingFetch || loadingAnalysis} />
+							<Tab label="ANALYSIS" index={1} disabled={loadingFetch || loadingAnalysis} />
 						</Tabs>
 					</div>
 					{loadingFetch &&
@@ -140,18 +158,18 @@ export default function AppMobile() {
 										</div>
 									</div>
 									<div className='app-main-info-buttons'>
-										<Button variant="outlined" onClick={() => window.open(currentBook.read_online, '_blank')}>READ ONLINE</Button>
-										<Button variant="outlined" onClick={() => window.open(currentBook.download_html)}>DOWNLOAD HTML</Button>
+										<Button variant="outlined" disabled={loadingFetch || loadingAnalysis} onClick={() => window.open(currentBook.read_online, '_blank')}>READ ONLINE</Button>
+										<Button variant="outlined" disabled={loadingFetch || loadingAnalysis} onClick={() => window.open(currentBook.download_html)}>DOWNLOAD HTML</Button>
 									</div>
 								</div>
 							}
 							{tab === 1 &&
 								<div className='app-analysis'>
 									<div className='app-analysis-buttons'>
-										<Button variant="outlined" onClick={() => analysis('characters')}>Key Characters</Button>
-										<Button variant="outlined" onClick={() => analysis('language')}>Language Detection</Button>
-										<Button variant="outlined" onClick={() => analysis('sentiment')}>Sentiment Analysis</Button>
-										<Button variant="outlined" onClick={() => analysis('summary')}>Plot Summary</Button>
+										<Button variant="outlined" disabled={loadingFetch || loadingAnalysis} onClick={() => analysis('characters')}>Key Characters</Button>
+										<Button variant="outlined" disabled={loadingFetch || loadingAnalysis} onClick={() => analysis('language')}>Language Detection</Button>
+										<Button variant="outlined" disabled={loadingFetch || loadingAnalysis} onClick={() => analysis('sentiment')}>Sentiment Analysis</Button>
+										<Button variant="outlined" disabled={loadingFetch || loadingAnalysis} onClick={() => analysis('summary')}>Plot Summary</Button>
 									</div>
 									{loadingAnalysis &&
 										<div className='app-loading' style={{marginBottom: 25}}><CircularProgress /></div>

@@ -13,6 +13,14 @@ def index(request):
 
 def search(request, book_id):
 
+	if not book_id.isdigit():
+		response_dict = {
+			'status_message': 'error',
+			'status_code': 400,
+			'message': 'Invalid book ID.'
+		}
+		return JsonResponse(response_dict, safe=False)
+
 	# Get metadata
 	metadata_url = f"https://www.gutenberg.org/ebooks/{book_id}"
 	response = requests.get(metadata_url)
@@ -75,6 +83,14 @@ def analysis(request):
 
 	book_id = request.GET.get('book_id')
 	action = request.GET.get('action')
+
+	if not book_id.isdigit():
+		response_dict = {
+			'status_message': 'error',
+			'status_code': 400,
+			'message': 'Invalid book ID.'
+		}
+		return JsonResponse(response_dict, safe=False)
 
 	# Get book content
 	content_url = f"https://www.gutenberg.org/files/{book_id}/{book_id}-0.txt"
