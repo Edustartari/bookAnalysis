@@ -4,6 +4,7 @@ dist/
 webpack-stats.json
 db.sqlite3
 env/
+.env
 *.pyc
 */__pycache__
 static/*
