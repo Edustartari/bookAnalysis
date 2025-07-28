@@ -34,7 +34,7 @@ def search(request, book_id):
 	}
 
 	# Get link to read online
-	a_tag = soup.find('a', string='Read online (web)')
+	a_tag = soup.find('a', string='Read now!')
 	if a_tag:
 		link = a_tag['href']
 		if 'http' in link:
