@@ -157,7 +157,9 @@ export default function AppMobile() {
 										</div>
 									</div>
 									<div className='app-main-info-buttons'>
-										<Button variant="outlined" disabled={loadingFetch || loadingAnalysis} onClick={() => window.open(currentBook.read_online, '_blank')}>READ ONLINE</Button>
+										{currentBook.read_online &&
+											<Button variant="outlined" disabled={loadingFetch || loadingAnalysis} onClick={() => window.open(currentBook.read_online, '_blank')}>READ ONLINE</Button>
+										}
 										<Button variant="outlined" disabled={loadingFetch || loadingAnalysis} onClick={() => window.open(currentBook.download_html)}>DOWNLOAD HTML</Button>
 									</div>
 								</div>
