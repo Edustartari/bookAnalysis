@@ -6,11 +6,16 @@ from bs4 import BeautifulSoup
 from django.conf import settings
 import os
 from groq import Groq
+from ratelimit import limits, sleep_and_retry
 
+@sleep_and_retry
+@limits(calls=10, period=60)
 def index(request):
 	context = {}
 	return render(request, 'index.html', context)
 
+@sleep_and_retry
+@limits(calls=15, period=600)
 def search(request, book_id):
 
 	if not book_id.isdigit():
