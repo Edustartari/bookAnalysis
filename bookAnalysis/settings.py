@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
+# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 if not __debug__:
     os.environ.setdefault('PYTHONOPTIMIZE', '1')
@@ -31,9 +32,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-xvr35iqi#s0kbvj8s^gu@lf-ze5ncx*@9#ep(##g&vb%^q^443'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', ".vercel.app", 'testserver']
 
