@@ -102,9 +102,18 @@ def analysis(request):
 	response = requests.get(content_url)
 	book_content = response.text
 
-	client = Groq(
-		api_key=os.environ.get("GROQ_API_KEY"),
-	)
+	# Initialize Groq client
+	try:
+		client = Groq(
+			api_key=os.environ.get("GROQ_API_KEY"),
+		)
+	except:
+		response_dict = {
+			'status_message': 'error',
+			'status_code': 500,
+			'message': 'Error from Groq API'
+		}
+		return JsonResponse(response_dict, safe=False)	
 
 	try:
 		book_sample = book_content[:6000]

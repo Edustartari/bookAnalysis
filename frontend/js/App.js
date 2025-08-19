@@ -107,6 +107,11 @@ export default function AppMobile() {
 		const response = await fetch(`/analysis/?book_id=${currentBook['book_id']}&action=${action}`);
 		let text = await response.text();
 		let json = JSON.parse(text);
+		if(json.status_code !== 200){
+			alert(json?.message || 'Error fetching analysis data. Please try again later.');
+			setLoadingAnalysis(false);
+			return;
+		}
 		setAnalysisText(json.data);
 
 		// Update current book with the new analysis
