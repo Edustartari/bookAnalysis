@@ -19,5 +19,8 @@
 			"src": "/(.*)",
 			"dest": "bookAnalysis/wsgi.py"
 		}
-	]
+	],
+	"git": {
+		"deploymentEnabled": false
+	}
 }
