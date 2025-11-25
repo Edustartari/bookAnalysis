@@ -50,17 +50,11 @@ jobs:
           cd frontend
           npm run build
 
-      # - name: Build frontend assets
-      #   run: |
-      #     cd frontend
-      #     npm install -D webpack-cli
-      #     npm run build
-
       - name: Lint JavaScript (eslint)
         run: |
           cd frontend
-          npx eslint js/ || true
-
-      # - name: Build application
+          npx eslint js/
+      # - name: Lint JavaScript (eslint)
       #   run: |
-      #     bash build.sh
+      #     cd frontend
+      #     npx eslint js/ || true
