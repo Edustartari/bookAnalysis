@@ -56,5 +56,6 @@ jobs:
           npx eslint js/
 
       - name: Trigger Vercel Deploy
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           curl -X POST https://api.vercel.com/v1/integrations/deploy/${{secrets.VERCEL_DEPLOY_HOOK}}
