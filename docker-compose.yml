@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: bookanalysis
+      POSTGRES_USER: bookuser
+      POSTGRES_PASSWORD: bookpass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile-live
+    command: gunicorn bookAnalysis.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://bookuser:bookpass@db:5432/bookanalysis
+      DJANGO_SETTINGS_MODULE: bookAnalysis.settings
+
+volumes:
+  postgres_data:

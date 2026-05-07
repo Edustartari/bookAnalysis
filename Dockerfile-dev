@@ -1,0 +1,49 @@
+# Build backend
+FROM python:3.9-slim AS backend-build
+WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y build-essential libpq-dev curl && \
+    curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
+    apt-get install -y nodejs && \    
+    rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+COPY requirements.txt ./
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+# Copy backend and project files
+COPY . .
+COPY frontend/ /app/frontend/
+
+# Run npm install in frontend directory for development
+WORKDIR /app/frontend
+
+# Install frontend dependencies
+# RUN npm install
+
+WORKDIR /app
+
+############################################################
+# Build Docker image:
+# docker build -t bookanalysis-dev -f Dockerfile-dev .
+
+# Create Docker container for development:
+# docker run -it -d --name bookanalysis-container-dev -p 8000:8000 -v $PWD:/app bookanalysis-dev
+
+# Enter Docker container (open a bash):
+# docker exec -it bookanalysis-container-dev /bin/bash
+# docker exec -it bookanalysis-container-dev /bin/bash -c "python manage.py runserver 0.0.0.0:8000; exec bash"
+# docker exec -it bookanalysis-container-dev /bin/bash -c "cd frontend/ && npm start; exec bash"
+
+# List running containers:
+# docker ps -a
+
+# Stop the container:
+# docker stop bookanalysis-container-dev
+
+# Remove the container:
+# docker rm bookanalysis-container-dev

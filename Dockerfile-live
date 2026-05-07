@@ -1,0 +1,65 @@
+# Stage 1: Build frontend assets
+FROM node:22 AS frontend-build
+
+# Set working directory
+WORKDIR /app/frontend
+
+# Copy frontend source files required for build
+COPY frontend/package.json frontend/package-lock.json ./
+
+# Install dependencies and build frontend
+RUN npm ci --ignore-scripts
+COPY frontend/ ./
+RUN npm run build
+
+# Stage 2: Build backend
+FROM python:3.9-slim AS backend-build
+WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y build-essential libpq-dev curl && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+COPY requirements.txt ./
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+# Copy backend and project files
+# Checar se dá pra otimizar copiando apenas os arquivos necessários
+# COPY backend/ backend/
+# COPY bookAnalysis/ bookAnalysis/
+# COPY manage.py ./
+# COPY db.sqlite3 ./
+COPY . .
+
+# Copy built frontend assets to Django static directory
+COPY --from=frontend-build /app/static/ /app/static/
+
+# Collect static files (if using Django's collectstatic)
+# RUN python manage.py collectstatic --noinput
+
+# Expose port (change if needed)
+EXPOSE 8000
+
+# Start Gunicorn server
+CMD ["gunicorn", "bookAnalysis.wsgi:application", "--bind", "0.0.0.0:8000"]
+
+############################################################
+# Build Docker image:
+# docker build -t bookanalysis -f Dockerfile-live .
+
+# Run Docker container:
+# docker run -d --name bookanalysis-container -p 8000:8000 bookanalysis
+
+# Enter Docker container (open a bash):
+# docker exec -it bookanalysis-container /bin/bash
+
+# List running containers:
+# docker ps -a
+
+# Stop the container:
+# docker stop bookanalysis-container
+
+# Remove the container:
+# docker rm bookanalysis-container
